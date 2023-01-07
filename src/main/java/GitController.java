@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.io.IOException;
+import java.util.stream.Collectors;
 
 
 import static java.time.temporal.ChronoUnit.DAYS;
@@ -360,13 +361,17 @@ public class GitController {
     public static List<String> getTag(List<String> tag_hash, List<Commit> commitList, List<String> hash_list, List<String> hozon_list){
         // hash_listの子要素のhash値list
         List<String> child_list = new ArrayList<String>();
-        // returnするtagのhash値list
+        // tagのhash値list
         List<String> tag_list = new ArrayList<String>();
         // child_listを全て格納して再帰する際の親hash値listとして使う
         List<String> new_hash_list = new ArrayList<String>();
+        // returnする重複を除いたtagのhash値list
+        List<String> tag_list_unique = new ArrayList<String>();
+
+
         int count = 0;
         // hash_listから1つずつ探索開始
-        System.out.println("hashList: " + hash_list);
+        // System.out.println("hashList: " + hash_list);
         loop: for(String h: hash_list){
             // 何個目のhashかをcount
             count++;
@@ -374,7 +379,7 @@ public class GitController {
                 // 同じであれば
                 if (h.equals(Tag)) {
                     // タグのハッシュ値を出力してtag_listにtagをaddする
-                    System.out.println("Tag: " + Tag);
+                    // System.out.println("Tag: " + Tag);
                     tag_list.add(Tag);
                     break;
                 }
@@ -403,10 +408,11 @@ public class GitController {
                     if (!tag_list.isEmpty()) {
                         // 親のハッシュ値を全て見ていれば
                         if (count == hash_list.size()) {
-                            System.out.println("ifif");
-                            return tag_list;
+                            // System.out.println("ifif");
+                            tag_list_unique = tag_list.stream().distinct().collect(Collectors.toList());
+                            return tag_list_unique;
                         } else {
-                            System.out.println("ifelse");
+                            // System.out.println("ifelse");
                             break;
                         }
                     }
